@@ -1,0 +1,15 @@
+Session Title: Juggling data structures
+Session Abstract:
+    I will literally juggle.
+    I will describe a notation for recording juggling patterns.
+    And then describe a compiler to use the notation as a sort of DSL.
+
+Speaker's Bio:
+    Born March 1987
+    Graduated AUBG in 2010
+    Currently senior full stack engineer at Skyscanner.
+    
+    I'm open and approachable person with a strong curiosity for 
+    all things technical; I also enjoy juggling.
+    So I am trying to combine my two passions and build some open source tools
+    to help jugglers learn tricks and even discover new ones.

@@ -1,0 +1,27 @@
+{
+    "pattern": "531",
+    "props": 3,
+    "steps": [
+        {
+            "step": 0,
+            "prop": 0,
+            "origin": 0,
+            "destination": 1,
+            "duration": 5
+        },
+        {
+            "step": 1,
+            "prop": 1,
+            "origin": 1,
+            "destination": 0,
+            "duration": 3
+        },
+        {
+            "step": 2,
+            "prop": 2,
+            "origin": 0,
+            "destination": 1,
+            "duration": 1
+        }
+    ]
+}
