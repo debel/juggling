@@ -1,20 +1,11 @@
 const assertArg = () => { throw new Error('expected arg') },
-    assertInt = n => { if (!Number.isInteger(n)) throw new Error('expected int'); },        
+    assertInt = n => { if (!Number.isInteger(n)) throw new Error('expected int'); },
     sum = (s, n) => { s += Number.parseInt(n, 10); return s; },
-    getNumberOfProps = pattern => {
-        const props = Array.from(pattern).reduce(sum, 0) / pattern.length;
-
-        if (Number.isInteger(props)) {
-            return props;
-        }
-
-        throw new Error('bad pattern');
-    },
     count = function* (n = Number.POSITIVE_INFINITY) {
         if (Number.isFinite(n)) {
             assertInt(n);
         }
-        
+
         let i = 0;
         while (true) {
             let k = yield i;
@@ -24,35 +15,61 @@ const assertArg = () => { throw new Error('expected arg') },
             }
         }
     },
-    propsArray = function (n = assertArg()) {
-        assertInt(n);
-        
-        const result = [];
-           
-        
-        for (let i = 0; i < n; i+=1) {
-            result.push(i);
+    makeProps = props => {
+        if (Array.isArray(props)) {
+            return props;    
+        } else if (Number.isInteger(props)) {
+            const result = [];
+            for (let i = 0; i < props; i+=1) {
+                result.push(i);
+            }
+            return result;
         }
-              
-        return result 
-    },
-    juggle = function* (pattern) {
-        const props = getNumberOfProps(pattern),
-            hands = count(2),
-            balls = count(props),
-            ticks = count();
-
-        let hand, tick, ball, index;
-
+        
+        return Array.from(props);
+    },  
+    props = function* (props) {
         while (true) {
-            tick = ticks.next().value;
-            hand = hands.next().value;
-            action = pattern[tick % pattern.length],
-            ball = balls.next(action).value;
+            let distance = yield props[0],
+                prop = props.splice(0,1)[0];
+                
+            if (!Number.isInteger(distance)) {
+                throw new Error('int expected');
+            }
             
-
-            yield {
-                tick, hand, ball
-            };
+            distance -=1;
+            if (distance < 0) { continue; } 
+            
+            if (props[distance]) {
+                throw new Error('multi catch forbidden');
+            }
+            
+            props[distance] = prop;
         }
+      },
+    juggle = function* (hands, props, ...patterns) {
+        const ticks = count();
+
+        let hand, tick, prop;
+
+        //init the props generator
+        prop = props.next().value;
+        
+        for (let p of patterns) {
+           for (let t of Array.from(p)) {
+               console.log(t); 
+           tick = ticks.next().value;
+           hand = hands.next().value;
+            
+            yield {
+                tick, hand, prop
+            };
+            
+            prop = props.next(Number.parseInt(t, 10)).value; 
+           }
+        }
+        
+        return {
+                tick, hand, prop
+        };
     };

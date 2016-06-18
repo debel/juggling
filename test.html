@@ -1,0 +1,57 @@
+<body>
+    <script>
+        const getTheProps = props => {
+        if (Array.isArray(props)) {
+            return props;    
+        } else if (Number.isInteger(props)) {
+            const result = [];
+            for (let i = 0; i < props; i+=1) {
+                result.push(String.fromCharCode('A'.charCodeAt(0) + i));
+            }
+            return result;
+        }
+        return Array.from(props);
+        },  
+      props = function* (props, callback = props => console.log("async", props)) {
+        props = getTheProps(props);
+        while (true) {
+            let jsonProps = JSON.stringify(props);
+            setTimeout(() => callback(jsonProps), 0);
+            
+            let prop = props.splice(0,1)[0],
+                distance = yield prop;
+                
+            if (!Number.isInteger(distance)) {
+                throw new Error('int expected');
+            }
+            
+            distance -=1;
+            if (distance < 0) { continue; } 
+            
+            if (props[distance]) {
+                throw new Error('multi catch forbidden');
+            }
+            
+            props[distance] = prop;
+        }
+      },
+      juggle = (props, ...patterns) => {
+          patterns.forEach(ptrnTimes => {
+            let times = Array.isArray(ptrnTimes) ? (ptrnTimes[1] || 1) : 1;
+            for (let i = 0; i < times; i+=1) {
+              let pattern = Array.from(Array.isArray(ptrnTimes) ? ptrnTimes[0] : ptrnTimes);
+              pattern.forEach(d => props.next(Number.parseInt(d, 10)));
+            }    
+          });
+      },
+    _three = props('XYZ'),
+    _twoInOne = props(['A',,'B']),
+    _two = props(2),
+    juggleThree = (...patterns) => juggle(_three, ...pattern);
+    juggleTwo = juggle.bind(null, _two);
+    
+    _two.next()
+    //_three.next();
+    //_twoInOne.next();
+    </script>
+</body>
