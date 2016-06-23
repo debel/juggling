@@ -1,0 +1,37 @@
+digraph {
+    rankdir="LR";
+    open_sync[label="("]
+    close_sync[label=")"]
+    open_multi[label="["]
+    close_multi[label="]"]
+    digit[label="0,1,2.."]
+    group_digit[label="0,1,2.."]
+
+    start -> digit
+    start -> open_sync
+    start -> open_multi
+    
+    digit -> digit
+    digit -> open_sync
+    digit -> open_multi
+    
+    open_sync -> group_digit
+    open_sync-> open_multi
+    
+    open_multi -> group_digit
+    
+    group_digit -> group_digit
+    group_digit -> close_multi
+    group_digit -> close_sync
+    
+    close_multi -> open_sync
+    close_multi -> digit
+    
+    close_sync -> open_multi
+    close_sync -> digit
+
+    digit -> end
+    close_multi -> end
+    close_sync -> end
+
+}
