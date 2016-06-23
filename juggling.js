@@ -15,38 +15,39 @@ const assertArg = () => { throw new Error('expected arg') },
             }
         }
     },
-    makeProps = props => {
-        if (Array.isArray(props)) {
-            return props;    
-        } else if (Number.isInteger(props)) {
+    inflate = arg => {
+        if (Array.isArray(arg)) {
+            return arg;
+        } else if (Number.isInteger(arg)) {
             const result = [];
-            for (let i = 0; i < props; i+=1) {
+            for (let i = 0; i < arg; i += 1) {
                 result.push(i);
             }
             return result;
         }
-        
-        return Array.from(props);
-    },  
-    props = function* (props) {
+
+        return Array.from(arg);
+    },
+    rotation = function* (props) {
+        props = inflate(props);
         while (true) {
             let distance = yield props[0],
-                prop = props.splice(0,1)[0];
-                
+                prop = props.splice(0, 1)[0];
+
             if (!Number.isInteger(distance)) {
                 throw new Error('int expected');
             }
-            
-            distance -=1;
-            if (distance < 0) { continue; } 
-            
+
+            distance -= 1;
+            if (distance < 0) { continue; }
+
             if (props[distance]) {
                 throw new Error('multi catch forbidden');
             }
-            
+
             props[distance] = prop;
         }
-      },
+    },
     juggle = function* (hands, props, ...patterns) {
         const ticks = count();
 
@@ -54,22 +55,24 @@ const assertArg = () => { throw new Error('expected arg') },
 
         //init the props generator
         prop = props.next().value;
-        
+
         for (let p of patterns) {
-           for (let t of Array.from(p)) {
-               console.log(t); 
-           tick = ticks.next().value;
-           hand = hands.next().value;
-            
-            yield {
-                tick, hand, prop
-            };
-            
-            prop = props.next(Number.parseInt(t, 10)).value; 
-           }
+            for (let distance of Array.from(p)) {
+                tick = ticks.next().value;
+                hand = hands.next().value;
+
+                yield {
+                    tick, hand, prop, distance
+                };
+
+                prop = props.next(Number.parseInt(distance, 10)).value;
+            }
         }
-        
+
         return {
-                tick, hand, prop
+            tick, hand, prop
         };
     };
+
+
+const three = juggle(count(2), rotation(3), '5421');
