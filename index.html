@@ -127,47 +127,47 @@
       <section>
         <h2>JavaScript: the juggling function</h2>
         <pre><code class="javascript">
-          juggle = function*(hands, props, ...patterns) { }
+  juggle = function*(hands, props, ...patterns) { }
         </code></pre>
       </section>
 
       <section>
         <h2>JavaScript: parsing patterns</h2>
         <pre><code class="javascript">
-           const shuffle = function*(props) {
-            while (true) {
-              let distance = yield props[0],
-                  prop = props.splice(0, 1)[0];
+  const shuffle = function*(props) {
+    while (true) {
+      let distance = yield props[0],
+      prop = props.splice(0, 1)[0];
 
-              if (typeof prop !== 'object') {
-                throw new Error('no prop');
-              }
+      if (typeof prop !== 'object') {
+        throw new Error('no prop');
+      }
 
-              if (distance < 0) {
-                continue;
-              }
+      if (distance < 0) {
+        continue;
+      }
 
-              props[distance].push(prop);
-            }
-          }
+      props[distance].push(prop);
+    }
+  }
         </code></pre>
       </section>
 
       <section>
         <h2>JavaScript: the juggling loop</h2>
         <pre><code class="javascript">
-              while (true) {
-                for (let pattern of patterns) {
-                  for (let { value: move } of parse(pattern)) {
-                    tick = ticks.next().value;
-                    hand = hands.next().value;
+    while (true) {
+      for (let pattern of patterns) {
+        for (let { value: move } of parse(pattern)) {
+          tick = ticks.next().value;
+          hand = hands.next().value;
 
-                    yield { tick, hand, prop, move };
+          yield { tick, hand, prop, move };
 
-                    prop = props.next(Number.parseInt(move, 10)).value;
-                  }
-                }
-              }
+          prop = props.next(Number.parseInt(move, 10)).value;
+        }
+      }
+    }
         </code></pre>
       </section>
 
@@ -200,5 +200,15 @@
       }]
     });
   </script>
-  <script </body>
-    < /html>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-93032616-3', 'auto');
+    ga('send', 'pageview');
+  </script>
+</body>
+
+</html>
