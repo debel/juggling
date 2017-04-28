@@ -5,7 +5,7 @@ const juggle = (pattern = '3', props = 'XYZ') => {
                     .map((distance, position) => (position + distance) % props.length)
                     .reduce((result, landing, current) => {
                         result[landing] = props[current]; return result;
-                    }, []);
+                    }, props);
       };
       
     

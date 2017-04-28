@@ -1,159 +1,177 @@
-const assertArg = () => { throw new Error('expected arg') },
-    assertInt = n => { if (!Number.isInteger(n)) throw new Error('expected int'); },
-    sum = (s, n) => { s += Number.parseInt(n, 10); return s; },
-    count = function* (n = Number.POSITIVE_INFINITY) {
-        if (Number.isFinite(n)) {
-            assertInt(n);
-        }
+const assertArg = () => {
+  throw new Error('expected arg')
+};
 
-        let i = 0;
-        while (true) {
-            let k = yield i;
-            i += k || 1;
-            if (Number.isFinite(n)) {
-                i %= n;
-            }
-        }
-    },
-    inflate = arg => {
-        if (Array.isArray(arg)) {
-            return arg;
-        } else if (Number.isInteger(arg)) {
-            const result = [];
-            for (let id = 0; id < arg; id += 1) {
-                result.push({ id });
-            }
-            return result;
-        }
+const assertInt = n => {
+  if (!Number.isInteger(n)) throw new Error('expected int');
+};
 
-        return Array.from(arg);
-    },
-    shuffle = function* (props) {
-        props = inflate(props);
-        while (true) {
-            let distance = yield props[0],
-                prop = props.splice(0, 1)[0];
+const sum = (s, n) => {
+  s += Number.parseInt(n, 10);
+  return s;
+};
 
-            if (typeof prop !== 'object') {
-                throw new Error('no prop');
-            }
+const count = function* (n = Number.POSITIVE_INFINITY) {
+  if (Number.isFinite(n)) {
+    assertInt(n);
+  }
 
-            if (!Number.isInteger(distance)) {
-                throw new Error('int expected');
-            }
+  let i = 0;
+  while (true) {
+    let k = yield i;
+    i += k || 1;
+    if (Number.isFinite(n)) {
+      i %= n;
+    }
+  }
+};
 
-            distance -= 1;
-            if (distance < 0) { continue; }
+const inflate = arg => {
+  if (Array.isArray(arg)) {
+    return arg;
+  } else if (Number.isInteger(arg)) {
+    const result = [];
+    for (let id = 0; id < arg; id += 1) {
+      result.push({
+        id
+      });
+    }
+    return result;
+  }
 
-            if (props[distance]) {
-                throw new Error('multi catch forbidden');
-            }
+  return Array.from(arg);
+};
 
-            props[distance] = prop;
-        }
-    },
-    siteswapSymbols = {
-        '\\[': (scope, current) => {
-            if (scope.state && scope.state.multiplex) {
-                throw new Error(['cannot multi-multiplex', current]);
-            }
+const shuffle = function* (props) {
+  props = inflate(props);
+  while (true) {
+    let distance = yield props[0],
+      prop = props.splice(0, 1)[0];
 
-            scope.state = { group: [], multiplex: true };
-        },
-        '\\]': (scope, current) => {
-            if (!scope.state || !scope.state.multiplex) {
-                throw new Error('not in a multiplex', current);
-            }
-            
-            const result = scope.state; 
+    if (typeof prop !== 'object') {
+      throw new Error('no prop');
+    }
 
-            scope.state = null;
-            
-            return result;
-        },
-        '\\(': (scope, current) => {
-            if (scope.state && scope.state.sync) {
-                throw new Error('cannot multi-sync', current);
-            }
+    if (!Number.isInteger(distance)) {
+      throw new Error('int expected');
+    }
 
-            scope.state = { group:[], sync: true };
-        },
-        '\\)': (scope, current) => {
-            if (!scope.state || !scope.state.sync) {
-                throw new Error('not in a sync', current);
-            }
+    distance -= 1;
+    if (distance < 0) {
+      continue;
+    }
 
-            const result = scope.state;
-            scope.state = null;
-            
-            return result;
-        },
-        '\\d': (scope, number) => {
-            const value = { number: true, value: number};
+    if (props[distance]) {
+      throw new Error('multi catch forbidden');
+    }
 
-            if (scope.state && scope.state.group) {
-                scope.state.group.push(value);
-            }  else {
-                return value;
-            }
-        }
-    },
-    _errorSymbol = (state, char) => {
-        throw new Error('unknown symbol', char);
-    },
-    parse = function* (pattern) {
-        pattern = Array.from(pattern);
+    props[distance] = prop;
+  }
+};
 
-        const regexs = Object.keys(siteswapSymbols)
-                             .map(key => [key, new RegExp(key)]);
+const siteswapSymbols = {
+  '\\[': (scope, current) => {
+    if (scope.state && scope.state.multiplex) {
+      throw new Error(['cannot multi-multiplex', current]);
+    }
 
-        let scope = { state: null };
+    scope.state = {
+      group: [],
+      multiplex: true
+    };
+  },
+  '\\]': (scope, current) => {
+    if (!scope.state || !scope.state.multiplex) {
+      throw new Error('not in a multiplex', current);
+    }
 
-        for (let p of pattern) {
-            let matches = regexs.map(([key, regex]) => [key, regex.exec(p)])
-                                .filter(([key, match]) => match);
+    const result = scope.state;
 
-            if (matches.length === 0) {
-                _errorSymbol('no match for', p);
-            } else if (matches.length > 1) {
-                _errorSymbol(['ambigous', p]);
-            } else {
-                let [key, match] = matches[0];
+    scope.state = null;
 
-                const result = siteswapSymbols[key](scope, match);
-                if (result) {
-                    yield result;
-                }
-            }
-        }
-    },
-    juggle = function* (hands, props, ...patterns) {
-        const ticks = count();
+    return result;
+  },
+  '\\(': (scope, current) => {
+    if (scope.state && scope.state.sync) {
+      throw new Error('cannot multi-sync', current);
+    }
 
-        let hand, tick, prop;
+    scope.state = {
+      group: [],
+      sync: true
+    };
+  },
+  '\\)': (scope, current) => {
+    if (!scope.state || !scope.state.sync) {
+      throw new Error('not in a sync', current);
+    }
 
-        //init the props generator
-        prop = props.next().value;
+    const result = scope.state;
+    scope.state = null;
 
-        for (let p of patterns) {
-            for (let move of parse(p)) {
-                tick = ticks.next().value;
-                hand = hands.next().value;
-
-                yield {
-                    tick, hand, prop, move
-                };
-
-                prop = props.next(Number.parseInt(move, 10)).value;
-            }
-        }
-
-        return {
-            tick, hand, prop
-        };
+    return result;
+  },
+  '\\d': (scope, number) => {
+    const value = {
+      number: true,
+      value: number
     };
 
+    if (scope.state && scope.state.group) {
+      scope.state.group.push(value);
+    } else {
+      return value;
+    }
+  }
+};
 
-const three = juggle(count(2), shuffle(3), '5421'),
-    four = juggle(count(2), shuffle(3), '[54]21');
+const regexs = Object.keys(siteswapSymbols)
+  .map(key => [key, new RegExp(key)]);
 
+const parse = function* (pattern) {
+  pattern = Array.from(pattern);
+
+  let scope = {
+    state: null
+  };
+
+  for (let move of pattern) {
+    let matches = regexs.map(([key, regex]) => [key, regex.exec(move)])
+      .filter(([key, match]) => match);
+
+    if (matches.length === 0) {
+      throw new Error('invalid', move);
+    } else if (matches.length > 1) {
+      throw new Error('ambigous', move);
+    } else {
+      let [key, match] = matches[0];
+
+      const result = siteswapSymbols[key](scope, match);
+      if (result) {
+        yield result;
+      }
+    }
+  }
+};
+
+const juggle = function* (hands, props, ...patterns) {
+  const ticks = count();
+
+  let hand, tick, prop;
+
+  //init the props generator
+  prop = props.next().value;
+
+  while (true) {
+    for (let pattern of patterns) {
+      for (let { value: move } of parse(pattern)) {
+        tick = ticks.next().value;
+        hand = hands.next().value;
+
+        yield { tick, hand, prop, move };
+
+        prop = props.next(Number.parseInt(move, 10)).value;
+      }
+    }
+  }
+};

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Juggling and JavaScript</title>
+  <link rel="stylesheet" href="client/reveal.min.css" />
+  <link rel="stylesheet" href="client/night.css" />
+  <link rel="stylesheet" href="client/zenburn.css" />
+  <style>
+    li {
+      list-style: none;
+    }
+
+    .theory:before {
+      content: "In theory: ";
+      color: gray;
+    }
+
+    .practise:before {
+      content: "In practise: ";
+      color: gray;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <h1>Juggling and JavaScript</h1>
+        <div style="align: right">by Mihail Mikov</div>
+      </section>
+      <section>
+        <h2>Why Juggling and JS?!</h2>
+        <ul class="fragment">
+          <li>I like them both</li>
+          <li>Helps in understanding and learing patterns</li>
+          <li>It's nerdy and fun!</li>
+        </ul>
+      </section>
+      <section>
+        <img src="images/fail.gif" />
+      </section>
+      <section>
+        <h2>About me</h2>
+        <img src="images/skyscanner_3.png" />
+        <h3>Full stack engineer at Skyscanner</h3>
+      </section>
+      <section>
+        <h2>About me</h2>
+        <img src="images/me.gif" />
+        <h3>Hobby juggler</h3>
+      </section>
+      <section>
+        <h2>Juggling</h2>
+        <ul>
+          <li class="theory">any sort of coordinated object manipulation</li>
+          <li class="practise">throwing 3 balls</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Juggling pattern</h2>
+        <ul>
+          <li class="theory">a unique series of manipulations</li>
+          <li class="practise">the shower, the box, mills mess
+        </ul>
+      </section>
+      <section>
+        <h2>Siteswap notation</h2>
+        <ul>
+          <li class="theory">a numerical notation for recording patterns</li>
+          <li class="practise">3, 4, 5, 441, 423, 531, 51</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Siteswap rules</h2>
+        <ul>
+          <li class="theory">each number represents the "distance" the object moves</li>
+          <li class="practise">each number tells you how high and in what direction to throw</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Siteswap Rules</h2>
+        <ul class="theory">
+          <li>alternate hands</li>
+          <li>a - number denotes in which hand the ball will fall</li>
+          <li>[ab] - numbers in brackets are thrown togather from the same hand</li>
+          <li>(a,b) - numbers in braces are thrown togather from both hands</li>
+          <li>([ab], [cd]) - throwing similatiously from both hands</li>
+        </ul>
+      </section>
+
+
+      <section>
+        <h2>Cascade - 3</h2>
+        <img src="images/3.gif" />
+      </section>
+
+      <section>
+        <h2>Shower - 51</h2>
+        <img src="images/51.gif" />
+      </section>
+
+      <section>
+        <h2>Two in one hand - 40</h2>
+        <img src="images/40.gif" />
+      </section>
+
+      <section>
+        <h2>Four async</h2>
+        <img src="images/4.gif" />
+      </section>
+
+      <section>
+        <h2>Rubenstein's revenge</h2>
+        <img src="images/rubenstein.gif" />
+      </section>
+
+
+      <section>
+        <h2>Juggling with friends</h2>
+        <img src="images/choko2.gif" />
+      </section>
+
+      <section>
+        <h2>JavaScript: the juggling function</h2>
+        <pre><code class="javascript">
+          juggle = function*(hands, props, ...patterns) { }
+        </code></pre>
+      </section>
+
+      <section>
+        <h2>JavaScript: parsing patterns</h2>
+        <pre><code class="javascript">
+           const shuffle = function*(props) {
+            while (true) {
+              let distance = yield props[0],
+                  prop = props.splice(0, 1)[0];
+
+              if (typeof prop !== 'object') {
+                throw new Error('no prop');
+              }
+
+              if (distance < 0) {
+                continue;
+              }
+
+              props[distance].push(prop);
+            }
+          }
+        </code></pre>
+      </section>
+
+      <section>
+        <h2>JavaScript: the juggling loop</h2>
+        <pre><code class="javascript">
+              while (true) {
+                for (let pattern of patterns) {
+                  for (let { value: move } of parse(pattern)) {
+                    tick = ticks.next().value;
+                    hand = hands.next().value;
+
+                    yield { tick, hand, prop, move };
+
+                    prop = props.next(Number.parseInt(move, 10)).value;
+                  }
+                }
+              }
+        </code></pre>
+      </section>
+
+      <section>
+        <h2>Thank you!</h2>
+        <h3>Questions, Comments, Tricks?</h3>
+      </section>
+      <section>
+        <h2>Links:</h2>
+        <ul>
+          <li><a href="http://juggle.wikia.com/">Animations from Juggling wiki</a></li>
+          <li><a href="https://github.com/debel/juggling">My source code</a> </li>
+        </ul>
+      </section>
+    </div>
+  </div>
+  <script src="client/head.min.js"></script>
+  <script src="client/reveal.min.js"></script>
+  <script>
+    Reveal.initialize({
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      controls: false,
+      history: true,
+      dependencies: [{
+        src: 'client/highlight.js',
+        callback: function() {
+          hljs.initHighlightingOnLoad();
+        }
+      }]
+    });
+  </script>
+  <script </body>
+    < /html>
