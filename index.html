@@ -12,14 +12,29 @@
       list-style: none;
     }
 
+    pre>code {
+      max-height: 100% !important;
+    }
+
+    pre {
+      font-size: 0.8em !important;
+    }
+
+    pre>code {
+      overflow: hidden !important;
+    }
+
+    .theory:before, .practise:before {
+      color: burlywood;
+      font-weight: bold;
+    }
+
     .theory:before {
       content: "In theory: ";
-      color: gray;
     }
 
     .practise:before {
       content: "In practise: ";
-      color: gray;
     }
   </style>
 </head>
@@ -27,160 +42,205 @@
 <body>
   <div class="reveal">
     <div class="slides">
-      <section>
+      <section id="title">
         <h1>Juggling and JavaScript</h1>
-        <div style="align: right">by Mihail Mikov</div>
+        <div>by Mihail Mikov</div>
       </section>
-      <section>
-        <h2>Why Juggling and JS?!</h2>
-        <ul class="fragment">
-          <li>I like them both</li>
-          <li>Helps in understanding and learing patterns</li>
-          <li>It's nerdy and fun!</li>
+      <section id="about-me-skyscanner">
+        <h2>About me</h2>
+        <img width="60%" src="images/skyscanner_3.png" />
+        <h3>Senior Full-Stack Engineer at Skyscanner</h3>
+      </section>
+      <section id="about-me-juggler">
+        <h2>About me</h2>
+        <img width="80%" src="images/me.gif" />
+        <h3>Hobby Juggler</h3>
+      </section>
+      <section id="why-juggling">
+        <h2>Why Juggling?!</h2>
+        <ul>
+          <li class="fragment">It's a lot of fun</li>
+          <li class="fragment">It's relaxing and refreshing</li>
+          <li class="fragment">It's full of algorithms</li>
         </ul>
       </section>
-      <section>
-        <img src="images/fail.gif" />
+      <section id="juggling-fail">
+        <img width="75%" src="images/juggling-fail.gif" />
       </section>
-      <section>
-        <h2>About me</h2>
-        <img src="images/skyscanner_3.png" />
-        <h3>Full stack engineer at Skyscanner</h3>
+      <section id="why-javascript">
+        <h2>Why JavaScript?!</h2>
+        <ul>
+          <li class="fragment">It's on almost every device</li>
+          <li class="fragment">There's a huge community of devs</li>
+          <li class="fragment">I actually like it (｡･_･｡)</li>
+        </ul>
       </section>
-      <section>
-        <h2>About me</h2>
-        <img src="images/me.gif" />
-        <h3>Hobby juggler</h3>
+      <section id="js-fail">
+        <img width="75%" src="images/js-fail.gif" />
       </section>
-      <section>
+      <section id="juggling-definition">
         <h2>Juggling</h2>
         <ul>
           <li class="theory">any sort of coordinated object manipulation</li>
           <li class="practise">throwing 3 balls</li>
         </ul>
       </section>
-      <section>
+      <section id="pattern-definition">
         <h2>Juggling pattern</h2>
         <ul>
           <li class="theory">a unique series of manipulations</li>
           <li class="practise">the shower, the box, mills mess
         </ul>
       </section>
-      <section>
+      <section id="siteswap-definition">
         <h2>Siteswap notation</h2>
         <ul>
           <li class="theory">a numerical notation for recording patterns</li>
           <li class="practise">3, 4, 5, 441, 423, 531, 51</li>
         </ul>
       </section>
-      <section>
+      <section id="siteswap-rules-1">
         <h2>Siteswap rules</h2>
         <ul>
           <li class="theory">each number represents the "distance" the object moves</li>
           <li class="practise">each number tells you how high and in what direction to throw</li>
         </ul>
       </section>
-
-      <section>
+      <section id="siteswap-rules-2">
         <h2>Siteswap Rules</h2>
         <ul class="theory">
-          <li>alternate hands</li>
-          <li>a - number denotes in which hand the ball will fall</li>
-          <li>[ab] - numbers in brackets are thrown togather from the same hand</li>
-          <li>(a,b) - numbers in braces are thrown togather from both hands</li>
-          <li>([ab], [cd]) - throwing similatiously from both hands</li>
+          <li>🤹 alternate hands</li>
+          <li>🤹 a - number denotes in which hand the ball will fall</li>
+          <li>🤹 [ab] - numbers in brackets are thrown togather from the same hand</li>
+          <li>🤹 (a,b) - numbers in braces are thrown togather from both hands</li>
+          <li>🤹 ([ab], [cd]) - throwing similatiously from both hands</li>
         </ul>
       </section>
-
-
-      <section>
-        <h2>Cascade - 3</h2>
-        <img src="images/3.gif" />
-      </section>
-
-      <section>
-        <h2>Shower - 51</h2>
-        <img src="images/51.gif" />
-      </section>
-
-      <section>
+      <section id="pattern-two-in-one">
         <h2>Two in one hand - 40</h2>
-        <img src="images/40.gif" />
+        <img width="40%" src="images/40.gif" />
       </section>
-
-      <section>
-        <h2>Four async</h2>
-        <img src="images/4.gif" />
+      <section id="pattern-cascade">
+        <h2>Cascade - 3</h2>
+        <img width="40%" src="images/3.gif" />
       </section>
-
-      <section>
+      <section id="pattern-fountain">
+        <h2>Async fountain - 4</h2>
+        <img width="40%" src="images/4.gif" />
+      </section>
+      <section id="pattern-423">
+        <h2>423</h2>
+        <img width="40%" src="images/423.gif" />
+      </section>
+      <section id="pattern-shower">
+        <h2>Shower - 51</h2>
+        <img width="40%" src="images/51.gif" />
+      </section>
+      <section id="pattern-rubenstein">
         <h2>Rubenstein's revenge</h2>
-        <img src="images/rubenstein.gif" />
+        <img width="40%" src="images/rubenstein.gif" />
       </section>
-
-
-      <section>
+      <section id="pattern-2-people">
+        <h2>Juggling with a friend</h2>
+        <img width="40%" src="images/choko2.gif" />
+      </section>
+      <section id="pattern-3-people">
         <h2>Juggling with friends</h2>
-        <img src="images/choko2.gif" />
+        <img width="40%" src="images/3x2pass.gif" />
       </section>
-
-      <section>
+      <section id="juggling-function-js">
         <h2>JavaScript: the juggling function</h2>
         <pre><code class="javascript">
-  juggle = function*(hands, props, ...patterns) { }
+          const juggle = function* (hands, props, pattern) { }
         </code></pre>
       </section>
-
-      <section>
-        <h2>JavaScript: parsing patterns</h2>
+      <section id="hands-function-js">
+        <h2>JavaScript: alternating hands</h2>
         <pre><code class="javascript">
-  const shuffle = function*(props) {
-    while (true) {
-      let distance = yield props[0],
-      prop = props.splice(0, 1)[0];
-
-      if (typeof prop !== 'object') {
-        throw new Error('no prop');
-      }
-
-      if (distance < 0) {
-        continue;
-      }
-
-      props[distance].push(prop);
-    }
-  }
+          const alternate = function* (hands = ['left', 'right']) {
+            while (true) {
+              for (let hand of hands) {
+                yield hand;
+              }
+            }
+          }
         </code></pre>
       </section>
+      <section id="shuffle-function-js">
+        <h2>JavaScript: shuffling props</h2>
+        <pre><code class="javascript">
+          const shuffle = function* (props = ['ball', 'club', 'ring']) {
+            while (true) {
+              let prop = props.splice(0, 1)[0];
 
-      <section>
+              let distance = yield prop;
+
+              if (!prop && distance > 0) {
+                throw new Error('no prop to throw');
+              }
+
+              props[distance].push(prop);
+            }
+          }
+        </code></pre>
+      </section>
+      <section id="juggling-loop-js">
         <h2>JavaScript: the juggling loop</h2>
         <pre><code class="javascript">
-    while (true) {
-      for (let pattern of patterns) {
-        for (let { value: move } of parse(pattern)) {
-          tick = ticks.next().value;
-          hand = hands.next().value;
+          const juggle = function* (hands, props, pattern) {
 
-          yield { tick, hand, prop, move };
+            ticks = timer();
+            props = shuffle(props);
+            hands = alternate(hands);
 
-          prop = props.next(Number.parseInt(move, 10)).value;
-        }
-      }
-    }
+            while (true) {
+              for (let jthrow of pattern) {
+
+                let tick = ticks.next().value;
+                let hand = hands.next().value;
+                let prop = props.next(jthrow).value;
+
+                yield { tick, hand, prop, jthrow };
+              }
+            }
+          }
         </code></pre>
       </section>
+      <section id="juggling-ast-js">
+        <h2>JavaScript: the juggling AST</h2>
+        <pre><code class="javascript">
+          juggle(twoHands, threeBalls, '531');
 
-      <section>
-        <h2>Thank you!</h2>
-        <h3>Questions, Comments, Tricks?</h3>
+          // results in the following AST
+          [{
+            tick: 0,
+            hand: 'right',
+            prop: 'Ball 1',
+            jthrow: 5
+          }, {
+            tick: 1,
+            hand: 'left',
+            prop: 'Ball 2',
+            jthrow: 3
+          }, {
+            tick: 2,
+            hand: 'right',
+            prop: 'Ball 3',
+            jthrow: 1
+          }]
+        </code></pre>
       </section>
-      <section>
+      <section id="links">
         <h2>Links:</h2>
         <ul>
-          <li><a href="http://juggle.wikia.com/">Animations from Juggling wiki</a></li>
           <li><a href="https://github.com/debel/juggling">My source code</a> </li>
+          <li><a href="http://juggle.wikia.com/">The juggling wiki</a></li>
+          <li><a href="https://www.youtube.com/watch?v=38rf9FLhl-8">Mathematics of juggling (youtube)</a></li>
         </ul>
+      </section>
+      <section id="thanks">
+        <h2>Thank you!</h2>
+        <h3>Questions, Comments, Tricks?</h3>
       </section>
     </div>
   </div>
@@ -188,6 +248,11 @@
   <script src="client/reveal.min.js"></script>
   <script>
     Reveal.initialize({
+      width: 1024,
+      height: 768,
+      margin: 0.1,
+      minScale: 0.1,
+      maxScale: 1.3,
       transition: 'fade',
       transitionSpeed: 'fast',
       controls: false,
@@ -201,10 +266,17 @@
     });
   </script>
   <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
     ga('create', 'UA-93032616-3', 'auto');
     ga('send', 'pageview');

@@ -4,12 +4,12 @@ input:
 output:
     ast?
     state transitions
-    info: number of balls, 
-    
+    info: number of balls,
+
 
 verification:
     sum of numbers / count must be integer and constitutes the number of balls
-    
+
 
 informationSources: {
     startingHand: 'external',
@@ -38,5 +38,4 @@ sampleAST: [{
     power: 1
 }]
 
-//todo: draw with dot or svg
 sampleStateTransitions: "XYZ -4- YZ_X -4- Z_XY -1- ZXY -4- XY_Z -4- Y_ZX -1- YZX -5- ZX__Y -3- X_ZY -1- XZY -5- ZY__X -3- Y_ZX -1- YZX"
