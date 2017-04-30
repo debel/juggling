@@ -24,6 +24,10 @@
       overflow: hidden !important;
     }
 
+    .eg {
+      color: burlywood;
+    }
+
     .theory:before, .practise:before {
       color: burlywood;
       font-weight: bold;
@@ -85,6 +89,12 @@
           <li class="practise">throwing 3 balls</li>
         </ul>
       </section>
+      <section id="juggling-function-js-preview">
+        <h2>JavaScript: the juggling function</h2>
+        <pre><code class="javascript">
+          const juggle = function* (hands, props, pattern) { }
+        </code></pre>
+      </section>
       <section id="pattern-definition">
         <h2>Juggling pattern</h2>
         <ul>
@@ -116,37 +126,45 @@
           <li>🤹 ([ab], [cd]) - throwing similatiously from both hands</li>
         </ul>
       </section>
-      <section id="pattern-two-in-one">
+      <section id="basic-patterns">
+        <section id="pattern-cascade">
+          <h2>Cascade - 3</h2>
+          <img width="40%" src="images/3.gif" />
+          <h2>More basic examples</h2>
+          <h2>▼</h2>
+        </section>
+        <section id="pattern-two-in-one">
         <h2>Two in one hand - 40</h2>
         <img width="40%" src="images/40.gif" />
       </section>
-      <section id="pattern-cascade">
-        <h2>Cascade - 3</h2>
-        <img width="40%" src="images/3.gif" />
-      </section>
-      <section id="pattern-fountain">
-        <h2>Async fountain - 4</h2>
-        <img width="40%" src="images/4.gif" />
-      </section>
-      <section id="pattern-423">
+        <section id="pattern-423">
         <h2>423</h2>
         <img width="40%" src="images/423.gif" />
       </section>
-      <section id="pattern-shower">
-        <h2>Shower - 51</h2>
-        <img width="40%" src="images/51.gif" />
       </section>
-      <section id="pattern-rubenstein">
-        <h2>Rubenstein's revenge</h2>
-        <img width="40%" src="images/rubenstein.gif" />
-      </section>
-      <section id="pattern-2-people">
-        <h2>Juggling with a friend</h2>
-        <img width="40%" src="images/choko2.gif" />
-      </section>
-      <section id="pattern-3-people">
-        <h2>Juggling with friends</h2>
-        <img width="40%" src="images/3x2pass.gif" />
+      <section id="advanced-patterns">
+        <section id="pattern-fountain">
+          <h2>Async fountain - 4</h2>
+          <img width="40%" src="images/4.gif" />
+          <h2>More advanced examples</h2>
+          <h2>▼</h2>
+        </section>
+        <section id="pattern-shower">
+          <h2>Shower - 51</h2>
+          <img width="40%" src="images/51.gif" />
+        </section>
+        <section id="pattern-rubenstein">
+          <h2>Rubenstein's revenge</h2>
+          <img width="40%" src="images/rubenstein.gif" />
+        </section>
+        <section id="pattern-2-people">
+          <h2>Juggling with a friend</h2>
+          <img width="40%" src="images/choko2.gif" />
+        </section>
+        <section id="pattern-3-people">
+          <h2>Juggling with friends</h2>
+          <img width="40%" src="images/3x2pass.gif" />
+        </section>
       </section>
       <section id="juggling-function-js">
         <h2>JavaScript: the juggling function</h2>
@@ -173,15 +191,35 @@
             while (true) {
               let prop = props.splice(0, 1)[0];
 
+              if (!prop) throw new Error('no prop to throw');
+
               let distance = yield prop;
 
-              if (!prop && distance > 0) {
-                throw new Error('no prop to throw');
-              }
+              if (props[distance]) throw new Error('multi-catch');
 
-              props[distance].push(prop);
+              props[distance] = prop;
             }
           }
+        </code></pre>
+      </section>
+      <section id="shuffle-props-array-js">
+        <h2>Shuffle props state</h2>
+        <pre><code class="javascript">
+          // stepping through the generator modifies the state
+          // a sparse array of the props with timing as index
+          const props = shuffle(['ball', 'club', 'ring']);
+
+          // to execute the '531' pattern
+          // we pass each throw's site-swap to the next function
+
+          props.next(5); // yields 'ball';
+          /* state: */ ['club', 'ring', null, null, 'ball']
+
+          props.next(3); // yields 'club';
+          /* state: */ ['ring', null, 'club', 'ball']
+
+          props.next(1); // yields 'ring';
+          /* state: */ ['ring', 'club', 'ball']
         </code></pre>
       </section>
       <section id="juggling-loop-js">
@@ -229,6 +267,28 @@
             jthrow: 1
           }]
         </code></pre>
+      </section>
+      <section id="to-dos">
+        <h2>There is a lot more to do</h2>
+        <ol>
+          <li class="fragment">Decorate the AST with more juggling properties
+            <ul>
+              <li class="eg">e.g. throwing &amp; catching styles</li>
+            </ul>
+            <hr/>
+          </li>
+          <li class="fragment">Decorate the AST with physical properties
+            <ul>
+              <li class="eg">e.g. prop's weight &amp; throwing force</li>
+            </ul>
+            <hr/>
+          </li>
+          <li class="fragment">Produce animation based on the AST
+            <ul>
+              <li class="eg"> using MatterJS (2d) or WebGL (3d)</li>
+            </ul>
+          </li>
+        </ol>
       </section>
       <section id="links">
         <h2>Links:</h2>
