@@ -1,70 +1,69 @@
-const matcher = symbol => input => symbol === input;
-const symbol = (matcher, maker) => ({ matcher, maker });
+import tokens from './tokens';
 
-const startSync = symbol(matcher('('), (state, input) => {
-    if (state.sync) { throw new Error('sync in sync'); }
-    else if (state.multi) { throw new Error('sync in multi'); }
+const topOf = array => array[array.length - 1];
 
-    return {
-        sync: true,
-        props: []
-    };
-});
+const matchToken = input => {
+  const matched = tokens.filter(token => token.match(input));
 
-const endSync = symbol(matcher(')'), (state, input) => {
-    if (!state.sync) { throw new Error('not in sync'); }
-    else if (state.multi) { throw new Error('sync / multi mishmash'); }
-});
+  if (matched.length != 1) {
+      throw new Error(`Unexpected token`);
+  }
 
-const startMulti = symbol(matcher('['), (state, input) => {
-    if (state.multi) { throw new Error('multi in multi'); }
-
-    state.props.push({
-        multi: true,
-        props: []
-    });
-});
-
-const endMulti = symbol(matcher(']'), (state, input) => {
-    if (!state.multi) { throw new Error('not in multi'); }
-});
-
-const digit = symbol(input => Number.isInteger(parseInt(input, 10)), (state, input) => {
-    const digitObject =  {
-        digit: true,
-        value: parseInt(input, 10)
-    };
-
-    if (Array.isArray(state.props)) {
-        state.props.push(digitObject);
-        return state;
-    }
-    else { return digitObject; }
-});
-
-const siteSwapSymbols = [ digit, startSync, startMulti, endSync, endMulti ];
-
-const exactlyN = n => array => {
-    if (array.length !== n) {
-        throw new Error(`${array.length} != ${n}`);
-    }
-    return array;
+  return matched[0];
 };
 
-const tryExtractSingle = array => exactlyN(1)(array)[0];
+const makePattern = () => ({
+  type: 'pattern',
+  values: []
+});
 
-const select = (state, input) => tryExtractSingle(siteSwapSymbols.filter(symbol => symbol.matcher(input))).maker(state[state.length], input);
+const stateTracker = (startingState) => {
+  const state = [startingState];
 
-const parse = pattern => Array.from(pattern).reduce(select);
+  return {
+    push(token) {
+      topOf(state).values.push(token);
 
-parse('[53]01');
+      if (token.values) {
+        state.push(token);
+      }
+    },
+    pop() {
+      if (topOf(state).type === 'pattern') {
+        throw new Error('Unexpected end of pattern');
+      }
 
+      state.pop();
+    },
+    type() {
+      return topOf(state).type;
+    },
+    length() {
+      const top = topOf(state);
+      return top.values ? top.values.length : 1;
+    },
+    last() {
+      return topOf(topOf(state).values);
+    },
+    parent() {
+      return state[state.length - 2];
+    },
+    result() {
+      return startingState;
+    }
+  };
+};
 
+const parse = (pattern) => {
+  const state = stateTracker(makePattern());
 
+  Array.from(pattern).forEach((input, index) => {
+    try {
+      matchToken(input).build(state, input);
+    } catch (ex) {
+      throw new Error(`${ex.message} at ${input}:${index}`);
+    }
+  });
 
-
-
-
-
-
-
+  return state.result();
+};

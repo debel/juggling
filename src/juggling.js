@@ -45,27 +45,28 @@ const inflate = arg => {
 const shuffle = function* (props) {
   props = inflate(props);
   while (true) {
-    let distance = yield props[0],
-      prop = props.splice(0, 1)[0];
+    const prop = props.splice(0, 1)[0];
 
-    if (typeof prop !== 'object') {
-      throw new Error('no prop');
-    }
+    console.log(props);
+    let distance = yield prop;
 
     if (!Number.isInteger(distance)) {
       throw new Error('int expected');
     }
 
-    distance -= 1;
-    if (distance < 0) {
+    if (distance > 0 && !prop) {
+      throw new Error('no prop');
+    }
+
+    if (distance === 0 && prop) {
+      throw new Error('no toss');
+    }
+
+    if (distance === 0 && !prop) {
       continue;
     }
 
-    if (props[distance]) {
-      throw new Error('multi catch forbidden');
-    }
-
-    props[distance] = prop;
+    props[distance - 1] = prop;
   }
 };
 
