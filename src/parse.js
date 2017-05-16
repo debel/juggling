@@ -19,6 +19,7 @@ const makePattern = () => ({
 
 const stateTracker = (startingState) => {
   const state = [startingState];
+  const globals = { total: 0, length: 0 };
 
   return {
     push(token) {
@@ -48,7 +49,18 @@ const stateTracker = (startingState) => {
     parent() {
       return state[state.length - 2];
     },
+    globals() {
+      return globals;
+    },
     result() {
+      const props = globals.total / globals.length;
+      if (!Number.isInteger(props)) {
+        throw new Error("invalid pattern");
+      }
+
+      startingState.length = globals.length;
+      startingState.props = props;
+
       return startingState;
     }
   };

@@ -19,6 +19,12 @@ const digit = token(matchInt, (state, input) => {
     throw new Error('only even throws allowed in sync');
   }
 
+  if (!inSync(state) && state.type() !== 'multi') {
+    state.globals().length += 1;
+  }
+
+  state.globals().total += value;
+
   state.push({
     type: 'digit',
     value
@@ -37,6 +43,8 @@ const startSync = token(matchChar('('), (state, input) => {
     throw new Error('sync in multi');
   }
 
+  state.globals().hasSync = true;
+
   state.push({
     type: 'sync',
     values: []
@@ -54,6 +62,8 @@ const endSync = token(matchChar(')'), (state, input) => {
     throw new Error('empty sync');
   }
 
+  state.globals().length += state.length();
+
   state.pop();
 });
 
@@ -66,15 +76,25 @@ const comma = token(matchChar(','), (state, input) => {
 });
 
 const crossing = token(matchChar('x'), (state, input) => {
-if (!inSync(state)) {
-  throw new Error('crossing outside sync');
-}
+  const in_sync = inSync(state);
+  const has_sync = state.globals().hasSync;
+  const last = state.last();
 
-if (state.last().type !== 'digit') {
-  throw new Error('invalid crossing');
-}
+  if (last.type !== 'digit') {
+    throw new Error('invalid crossing');
+  }
 
-state.last().crossing = true;
+  if (in_sync && last.value % 2 === 0) {
+    last.crossing = true;
+    return;
+  }
+
+  if (!in_sync && has_sync && last.value % 2 !== 0) {
+    last.nonCrossing = true;
+    return;
+  }
+
+  throw new Error("invalid crossing");
 });
 
 const startMulti = token(matchChar('['), (state, input) => {
@@ -96,6 +116,10 @@ const endMulti = token(matchChar(']'), (state, input) => {
     throw new Error('empty multi');
   }
 
+  if (!inSync(state)) {
+    state.globals().length += 1;
+  }
+
   state.pop();
 });
 
@@ -107,7 +131,7 @@ const matchToken = input => {
   const matched = tokens.filter(token => token.match(input));
 
   if (matched.length != 1) {
-      throw new Error(`Unexpected token`);
+    throw new Error(`Unexpected token`);
   }
 
   return matched[0];
@@ -120,6 +144,10 @@ const makePattern = () => ({
 
 const stateTracker = (startingState) => {
   const state = [startingState];
+  const globals = {
+    total: 0,
+    length: 0
+  };
 
   return {
     push(token) {
@@ -136,9 +164,6 @@ const stateTracker = (startingState) => {
 
       state.pop();
     },
-    last() {
-      return topOf(topOf(state).values);
-    },
     type() {
       return topOf(state).type;
     },
@@ -146,10 +171,24 @@ const stateTracker = (startingState) => {
       const top = topOf(state);
       return top.values ? top.values.length : 1;
     },
+    last() {
+      return topOf(topOf(state).values);
+    },
     parent() {
       return state[state.length - 2];
     },
+    globals() {
+      return globals;
+    },
     result() {
+      const props = globals.total / globals.length;
+      if (!Number.isInteger(props)) {
+        throw new Error("invalid pattern");
+      }
+
+      startingState.length = globals.length;
+      startingState.props = props;
+
       return startingState;
     }
   };
@@ -169,7 +208,6 @@ const parse = (pattern) => {
   return state.result();
 };
 
-
 const inflate = arg => {
   if (Array.isArray(arg)) {
     return arg;
@@ -186,30 +224,84 @@ const inflate = arg => {
   return Array.from(arg);
 };
 
-const shuffle = function* (props) {
+const shuffle = function(props) {
   props = inflate(props);
+  return {
+    next(distance) {
+      if (!Number.isInteger(distance)) {
+        throw new Error('int expected');
+      }
+
+      let prop = props.splice(0, 1)[0];
+
+      if (distance > 0 && !prop) {
+        throw new Error('no prop');
+      }
+
+      if (distance === 0 && prop) {
+        throw new Error('no toss');
+      }
+
+      if (distance === 0 && !prop) {
+        return;
+      }
+
+      props[distance - 1] = prop;
+
+      return prop;
+    }
+  }
+};
+
+const count = function*(n = Number.POSITIVE_INFINITY) {
+  if (Number.isFinite(n) && !Number.isInteger(n)) {
+    throw new Error('expected int');
+  }
+
+  let i = 0;
   while (true) {
-    let distance = yield props[0];
-
-    let prop = props.splice(0, 1)[0];
-
-    if (!Number.isInteger(distance)) {
-      throw new Error('int expected');
+    let k = yield i;
+    i += k || 1;
+    if (Number.isFinite(n)) {
+      i %= n;
     }
+  }
+};
 
-    if (distance > 0 && !prop) {
-      throw new Error('no prop');
+const juggle = function*(hands, props, pattern) {
+  const _ticks = count();
+
+  const _hands = shuffle(hands);
+  const _numberOfHands = Number.isInteger(hands) ? hands : hands.length;
+
+  const _props = shuffle(props);
+
+  const _pattern = parse(pattern);
+
+  while (true) {
+    for (let move of pattern) {
+      const tick = _ticks.next().value;
+      const hand = _hands.next(_numberOfHands);
+
+      if (move.type === 'digit') {
+        const prop = _props.next(move.value);
+        yield {
+          tick,
+          hand,
+          prop,
+          move
+        };
+      } else if (move.type === 'sync' || move.type === 'multi') {
+        move.values.forEach(m => {
+          const prop = _props.next(m.value);
+          yield ({
+            tick,
+            hand,
+            prop,
+            move: m
+          });
+        });
+      }
     }
-
-    if (distance === 0 && prop) {
-      throw new Error('no toss');
-    }
-
-    if (distance === 0 && !prop) {
-      continue;
-    }
-
-    props[distance - 1] = prop;
-
   }
 };
